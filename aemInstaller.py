@@ -30,7 +30,7 @@ port = optDic.setdefault('port','4503')
 # success message has been recieved.
 #
 # Starts AEM installer
-installProcess = subprocess.Popen(['java', '-jar', fileName, '-r',runmode,'nosample','-p',port])
+installProcess = subprocess.Popen(['java', '-jar', fileName, '-debug', '50007', '-r',runmode,'nosample','-p',port])
 
 # Starting listener
 import socket
