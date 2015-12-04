@@ -16,6 +16,8 @@ RUN yum install -y zip
 RUN yum -y install ipython
 RUN yum install -y python-psutil
 RUN yum install -y python-pycurl
+RUN yum install -y python-simplejson
+RUN yum install -y python-requests
 
 # Install utility for AEM
 ADD aemInstaller.py /aem/aemInstaller.py
