@@ -3,13 +3,7 @@ import signal
 import os
 import sys
 import psutil
-import json
-import requests
-
-from time import sleep
 from optparse import OptionParser
-from requests.exceptions import ConnectionError
-from simplejson.scanner import JSONDecodeError
 
 # Argument definition
 usage = "usage: %prog [options] arg"
@@ -31,31 +25,34 @@ fileName = optDic.setdefault('filename','cq-publish-4503.jar')
 runmode = optDic.setdefault('runmode','publish')
 port = optDic.setdefault('port','4503')
 
-baseUrl = "http://localhost:" + port
-
-def allBundlesRunning():
-    session = requests.Session()
-    session.trust_env = False
-    body = session.get(baseUrl + "/system/console/bundles/.json", auth=('admin', 'admin')).json()
-    allBundlesRunning = True
-    for bundle in body["data"]:
-        if bundle["state"] != "Active" and bundle["state"] != "Fragment":
-            allBundlesRunning = False
-            break
-    return allBundlesRunning
-
-
+#
+# Waits for connection on 5007, and then checks that the returned
+# success message has been recieved.
+#
 # Starts AEM installer
-installProcess = subprocess.Popen(['java', '-jar', fileName, '-r',runmode,'nosample','-p',port])
-successfulStart = False
+installProcess = subprocess.Popen(['java', '-jar', fileName, '-listener-port','50007','-r',runmode,'nosample','-p',port])
 
+# Starting listener
+import socket
+HOST = ''
+PORT = 50007
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((HOST, PORT))
+s.listen(1)
+conn, addr = s.accept()
+
+successfulStart = False
 while 1:
-    try:
-        if allBundlesRunning() == True:
-            successfulStart = True
-            break
-    except (ConnectionError, JSONDecodeError):
-        sleep(1)
+    data = conn.recv(1024)
+    if not data:
+      break
+    else:
+      print str(data)
+      if str(data).strip() == 'started':
+        successfulStart = True
+      break
+    # conn.sendall(data)
+conn.close()
 
 #Post install hook
 postInstallHook = "postInstallHook.py"
