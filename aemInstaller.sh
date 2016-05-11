@@ -37,6 +37,8 @@ do
     then
         kill $pid
         kill $aemPID
+        if [ -f postInstall.sh ] ; then { echo "running post install hook"; postinstall.sh; } else { echo "no post install hook found"; } fi
         exit 0
     fi
 done
+
