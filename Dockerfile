@@ -8,3 +8,4 @@ ENV http_proxy=${HTTP_PROXY}
 
 # Install utility for AEM
 ADD aemInstaller.sh /aem/aemInstaller.sh
+RUN chmod +x /aem/aemInstaller.sh
