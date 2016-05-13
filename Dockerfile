@@ -3,8 +3,9 @@ FROM java:8
 
 MAINTAINER mikemarr
 
-RUN if [ ! -z "${HTTP_PROXY}" ] ; then { echo "proxy=${HTTP_PROXY}" >> /etc/yum.conf; } fi
 ENV http_proxy=${HTTP_PROXY}
+RUN apt-get update && apt-get install netcat -y
+
 
 # Install utility for AEM
 ADD aemInstaller.sh /aem/aemInstaller.sh

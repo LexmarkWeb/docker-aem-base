@@ -28,7 +28,7 @@ done
 java -jar $FILENAME -listener-port 50007 -r $RUNMODE nosample -p $PORT 2>&1 &
 aemPID=$!
 
-nc -k -l 50007 > "install.log" 2>&1 &
+nc -vklp 50007 > "install.log" 2>&1 &
 pid=$!
 
 while sleep 60
