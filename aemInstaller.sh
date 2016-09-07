@@ -35,9 +35,9 @@ while sleep 60
 do
     if grep --quiet "started" "install.log"
     then
+        if [ -f /aem/postInstallHook.sh ] ; then { echo "running post install hook"; /aem/postInstallHook.sh; } else { echo "no post install hook found"; } fi
         kill $pid
         kill $aemPID
-        if [ -f /aem/postInstallHook.sh ] ; then { echo "running post install hook"; /aem/postInstallHook.sh; } else { echo "no post install hook found"; } fi
         exit 0
     fi
 done
